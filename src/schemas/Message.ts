@@ -1,6 +1,11 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
-type Message = Document & {};
+type Message = Document & {
+  subject: string;
+  body: string;
+  completedAt: Date;
+  tags: string[];
+};
 
 const MessageSchema = new Schema(
   {

@@ -16,6 +16,7 @@ describe('Import', () => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,
+      useFindAndModify: false,
     });
   });
 
@@ -41,10 +42,12 @@ describe('Import', () => {
 
     const createdTags = await Tag.find({}).lean();
 
-    expect(createdTags).toEqual([
-      expect.objectContaining({ title: 'Students' }),
-      expect.objectContaining({ title: 'Class A' }),
-    ]);
+    expect(createdTags).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ title: 'Students' }),
+        expect.objectContaining({ title: 'Class A' }),
+      ]),
+    );
 
     const createdTagsIds = createdTags.map(tag => tag._id);
 
@@ -99,10 +102,7 @@ describe('Import', () => {
     const importContacts = new ImportContactsService();
 
     const tag = await Tag.create({ title: 'Students' });
-    await Contact.create({
-      email: 'leandromoro1008@gmail.com',
-      tags: [tag._id],
-    });
+    await Contact.create({ email: 'leandromoro1008@gmail.com', tags: [tag._id] });
 
     await importContacts.run(contactsFileStream, ['Class A']);
 
